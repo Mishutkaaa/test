@@ -18,3 +18,24 @@ func GetByID(db *sql.DB) http.HandlerFunc {
 		log.Println(record)
 	}
 }
+
+func GetAll(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var records []model.Record
+		rows, err := db.Query("select user_id, service_name, price, start_date from record")
+		if err != nil {
+			log.Println("cannot get rows", err)
+			return
+		}
+		defer rows.Close()
+		for rows.Next() {
+			record := model.Record{}
+			if err := rows.Scan(&record.UserID, &record.ServiceName, &record.Price, &record.StartDate); err != nil {
+				log.Println("cannot scan row")
+			}
+			records = append(records, record)
+		}
+
+		log.Println(records)
+	}
+}

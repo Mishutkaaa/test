@@ -11,6 +11,7 @@ func main() {
 	defer db.Close()
 
 	http.HandleFunc("/get/{id}", handles.GetByID(db))
+	http.HandleFunc("/get", handles.GetAll(db))
 
 	http.ListenAndServe(":8080", nil)
 }
