@@ -65,3 +65,14 @@ func CreateRecord(db *sql.DB) http.HandlerFunc {
 
 	}
 }
+
+func DeleteRecord(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+
+		if _, err := db.Exec("delete from record from id = $1", id); err != nil {
+			log.Println("cannot create record", err)
+			return
+		}
+	}
+}
