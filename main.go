@@ -13,7 +13,7 @@ func main() {
 	http.HandleFunc("/get/{id}", handles.GetByID(db))
 	http.HandleFunc("/get", handles.GetAll(db))
 	http.HandleFunc("/create", handles.CreateRecord(db))
-	http.HandleFunc("/update", handles.DeleteRecord(db))
+	http.HandleFunc("/delete/{id}", handles.DeleteRecord(db))
 
 	http.ListenAndServe(":8080", nil)
 }
