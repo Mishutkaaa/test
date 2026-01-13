@@ -6,7 +6,8 @@ Create table record(
     service_name text not null,
     price int not null,
     start_date date not null,
-    primary key(id)
+    primary key(id),
+    unique (user_id, service_name)
 );
 -- +goose StatementEnd
 
