@@ -1,0 +1,221 @@
+basePath: /
+definitions:
+  model.Record:
+    properties:
+      id:
+        type: integer
+      price:
+        type: integer
+      service_name:
+        type: string
+      start_date:
+        type: string
+      user_id:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  title: Record API
+  version: "1.0"
+paths:
+  /create:
+    post:
+      consumes:
+      - application/json
+      description: Создать запись о подписке
+      parameters:
+      - description: Данные записи
+        in: body
+        name: record
+        required: true
+        schema:
+          $ref: '#/definitions/model.Record'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: please fill in all required fields
+          schema:
+            type: string
+        "405":
+          description: method not allowed
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Создать новую запись
+      tags:
+      - records
+  /delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удалить запись по её ID
+      parameters:
+      - description: ID записи
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "405":
+          description: method not allowed
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Удалить запись по ID
+      tags:
+      - records
+  /get:
+    get:
+      consumes:
+      - application/json
+      description: Получить все записи из БД
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Record'
+            type: array
+        "405":
+          description: method not allowed
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить все записи
+      tags:
+      - records
+  /get/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Получить одну запись по её ID
+      parameters:
+      - description: ID записи
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Record'
+        "404":
+          description: record not found
+          schema:
+            type: string
+        "405":
+          description: method not allowed
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить запись по ID
+      tags:
+      - records
+  /sum:
+    get:
+      consumes:
+      - application/json
+      description: Получить общую сумму цен с фильтрами по дате, пользователю и сервису
+      parameters:
+      - description: Начальная дата в формате MM-YYYY
+        in: query
+        name: dateFrom
+        required: true
+        type: string
+      - description: Конечная дата в формате MM-YYYY
+        in: query
+        name: dateTo
+        required: true
+        type: string
+      - description: ID пользователя для фильтрации
+        in: query
+        name: user
+        type: string
+      - description: Название сервиса для фильтрации
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Сумма цен
+          schema:
+            type: number
+        "400":
+          description: pleale fill dateTo and dateFrom
+          schema:
+            type: string
+        "404":
+          description: record not found
+          schema:
+            type: string
+        "405":
+          description: method not allowed
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Получить сумму цен
+      tags:
+      - analytics
+  /update:
+    put:
+      consumes:
+      - application/json
+      description: Обновить запись (частичное обновление поддерживается)
+      parameters:
+      - description: Данные для обновления (обязательно поле id)
+        in: body
+        name: record
+        required: true
+        schema:
+          $ref: '#/definitions/model.Record'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: error decode json
+          schema:
+            type: string
+        "405":
+          description: method not allowed
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Обновить запись
+      tags:
+      - records
+swagger: "2.0"

@@ -3,7 +3,10 @@ package main
 import (
 	"net/http"
 	"test/database"
+	_ "test/docs"
 	"test/handles"
+
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func main() {
@@ -16,6 +19,10 @@ func main() {
 	http.HandleFunc("/delete/{id}", handles.DeleteRecord(db))
 	http.HandleFunc("/sum", handles.GetSumm(db))
 	http.HandleFunc("/update", handles.UpdateRecord(db))
+
+	http.Handle("/swagger/", httpSwagger.Handler(
+		httpSwagger.URL("./docs/doc.json"),
+	))
 
 	http.ListenAndServe(port, nil)
 }
