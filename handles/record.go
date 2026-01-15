@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"test/model"
 )
 
@@ -147,5 +148,47 @@ func GetSumm(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		json.NewEncoder(w).Encode(&record.Price)
+	}
+}
+
+func UpdateRecord(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var record model.Record
+		var queryArgs []string
+
+		if r.Method != "PUT" {
+			http.Error(w, "method not allowed ", http.StatusMethodNotAllowed)
+			return
+		}
+
+		if err := json.NewDecoder(r.Body).Decode(&record); err != nil {
+			http.Error(w, "error decode json", http.StatusBadRequest)
+			log.Println(err)
+			return
+		}
+
+		if record.ServiceName != "" {
+			queryArgs = append(queryArgs, fmt.Sprintf("service_name = '%s'", record.ServiceName))
+		}
+
+		if record.UserID != "" {
+			queryArgs = append(queryArgs, fmt.Sprintf("user_id = '%s'", record.UserID))
+		}
+
+		if record.Price != 0 {
+			queryArgs = append(queryArgs, fmt.Sprintf("price = '%d'", record.Price))
+		}
+
+		if record.StartDate != "" {
+			queryArgs = append(queryArgs, fmt.Sprintf("start_date = '%s'", "01-"+record.StartDate))
+		}
+
+		query := fmt.Sprintf("update record set %s where id = %d", strings.Join(queryArgs, ", "), record.ID)
+		if _, err := db.Exec(query); err != nil {
+			http.Error(w, "cannot update record", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+
 	}
 }
