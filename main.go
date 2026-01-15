@@ -14,6 +14,7 @@ func main() {
 	http.HandleFunc("/get", handles.GetAll(db))
 	http.HandleFunc("/create", handles.CreateRecord(db))
 	http.HandleFunc("/delete/{id}", handles.DeleteRecord(db))
+	http.HandleFunc("/sum", handles.GetSumm(db))
 
 	http.ListenAndServe(":8080", nil)
 }
