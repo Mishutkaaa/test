@@ -10,7 +10,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func Conn() *sql.DB {
+func Conn() (*sql.DB, string) {
 	if err := godotenv.Load(".env"); err != nil {
 		log.Println(".env not found")
 	}
@@ -21,10 +21,13 @@ func Conn() *sql.DB {
 	if port == "" {
 		port = "8080"
 	}
+	port = ":" + port
+
 	db, err := sql.Open("postgres", conn)
 	if err != nil {
 		log.Println("err conn db", err)
-		return nil
+		return nil, ""
 	}
-	return db
+
+	return db, port
 }

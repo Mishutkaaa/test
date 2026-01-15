@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	db := database.Conn()
+	db, port := database.Conn()
 	defer db.Close()
 
 	http.HandleFunc("/get/{id}", handles.GetByID(db))
@@ -17,5 +17,5 @@ func main() {
 	http.HandleFunc("/sum", handles.GetSumm(db))
 	http.HandleFunc("/update", handles.UpdateRecord(db))
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(port, nil)
 }
